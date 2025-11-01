@@ -1,7 +1,7 @@
 {
-  "name": "tgplaner-backend",
+  "name": "payplaner-backend",
   "version": "1.0.0",
-  "description": "Backend API and Telegram bot for TgPlaner",
+  "description": "Backend API and Telegram bot for PayPlaner",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",

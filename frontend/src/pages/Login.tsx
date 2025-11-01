@@ -25,7 +25,7 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center min-h-screen p-4">
       <Card className="w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-6">TgPlaner</h1>
+        <h1 className="text-2xl font-bold text-center mb-6">PayPlaner</h1>
         <p className="text-center text-gray-600 mb-6">
           Войдите через Telegram для доступа к приложению
         </p>

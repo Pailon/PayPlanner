@@ -1,12 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { VitePlugin } from '@twa-dev/vite-plugin';
 import path from 'path';
 
 export default defineConfig({
   plugins: [
     react(),
-    VitePlugin(),
   ],
   resolve: {
     alias: {

@@ -1,0 +1,57 @@
+# =============================================================================
+# PayPlanner Root .gitignore
+# =============================================================================
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Backups (содержат чувствительные данные)
+backups/*.sql
+backups/*.dump
+backups/*.gz
+
+# Keep backups directory structure
+!backups/.gitkeep
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Node modules (если случайно установлены в корне)
+node_modules/
+

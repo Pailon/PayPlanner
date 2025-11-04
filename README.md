@@ -47,9 +47,10 @@ npm run dev  # Frontend (порт 3001)
 ## 📚 Документация
 
 - **[DOCKER_SETUP.md](DOCKER_SETUP.md)** - полная инструкция по Docker (разработка + продакшен)
-- **[DEPLOYMENT_TIMEWEB_CLOUD.md](DEPLOYMENT_TIMEWEB_CLOUD.md)** - деплой на Timeweb Cloud
-- **[PayPlannerBackend/README.md](PayPlannerBackend/README.md)** - Backend API
-- **[PayPlannerFrontend/README.md](PayPlannerFrontend/README.md)** - Frontend
+- **[CLOUDFLARE_TUNNEL_SETUP.md](CLOUDFLARE_TUNNEL_SETUP.md)** - настройка Cloudflare Tunnel для HTTPS доступа
+- **[DEPLOYMENT_TIMEWEB_CLOUD.md](DEPLOYMENT_TIMEWEB_CLOUD.md)** - деплой на Timeweb Cloud (альтернатива)
+- **[backend/README.md](backend/README.md)** - Backend API
+- **[frontend/README.md](frontend/README.md)** - Frontend
 
 ## 🏗️ Архитектура
 
@@ -110,14 +111,23 @@ crontab -e
 
 ## 📦 Развертывание
 
-### Raspberry Pi (Ubuntu)
+### Raspberry Pi + Cloudflare Tunnel (рекомендуется)
 
 ```bash
-# Полная инструкция в DOCKER_SETUP.md
-docker-compose -f docker-compose.prod.yml up -d
+# 1. Настроить Cloudflare Tunnel (см. CLOUDFLARE_TUNNEL_SETUP.md)
+cloudflared tunnel create payplanner
+
+# 2. Запустить приложение
+docker-compose -f docker-compose.dev.yml up -d
+cd backend && npm run dev
+cd ../frontend && npm run dev
+
+# Доступ через: https://your-domain.com
 ```
 
-### Облако (Timeweb Cloud)
+См. [CLOUDFLARE_TUNNEL_SETUP.md](CLOUDFLARE_TUNNEL_SETUP.md)
+
+### Облако (альтернатива)
 
 См. [DEPLOYMENT_TIMEWEB_CLOUD.md](DEPLOYMENT_TIMEWEB_CLOUD.md)
 

@@ -68,14 +68,19 @@ async function startServer() {
     await bot.launch();
 
     app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-      console.log(`Bot is running`);
+      console.log('\n' + '='.repeat(60));
+      console.log('🚀 PayPlanner Backend успешно запущен!');
+      console.log('='.repeat(60));
+      console.log(`📡 API Server: http://localhost:${PORT}`);
+      console.log(`🤖 Telegram Bot: запущен и готов к работе`);
+      console.log(`🏥 Health Check: http://localhost:${PORT}/health`);
+      console.log('='.repeat(60) + '\n');
     });
 
     process.once('SIGINT', () => bot.stop('SIGINT'));
     process.once('SIGTERM', () => bot.stop('SIGTERM'));
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error('❌ Ошибка запуска сервера:', error);
     process.exit(1);
   }
 }

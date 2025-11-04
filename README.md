@@ -14,9 +14,12 @@ cd PayPlanner
 # 2. Настроить переменные окружения
 cp .env.example .env
 cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
 
 # Сгенерировать секретные ключи
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
+# Отредактировать .env файлы (добавить токены и ключи)
 
 # 3. Запустить базы данных
 docker-compose -f docker-compose.dev.yml up -d

@@ -2,29 +2,38 @@ import { pool } from '../config/database';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-async function migrate() {
+export async function runMigrations() {
   const client = await pool.connect();
 
   try {
-    const migrationSQL = readFileSync(
-      join(__dirname, 'migrations', '001_initial_schema.sql'),
-      'utf-8'
-    );
+    // В продакшене путь от корня контейнера /app/src/db/migrations
+    const migrationPath = join('/app/src/db/migrations/001_initial_schema.sql');
+    
+    const migrationSQL = readFileSync(migrationPath, 'utf-8');
 
     await client.query('BEGIN');
     await client.query(migrationSQL);
     await client.query('COMMIT');
 
-    console.log('Migration completed successfully');
+    console.log('✅ Миграции базы данных выполнены успешно');
   } catch (error) {
     await client.query('ROLLBACK');
-    console.error('Migration failed:', error);
+    console.error('❌ Ошибка выполнения миграций:', error);
     throw error;
   } finally {
     client.release();
-    await pool.end();
   }
 }
 
-migrate().catch(console.error);
+// Запуск миграций если файл вызван напрямую
+if (require.main === module) {
+  runMigrations()
+    .then(() => {
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error(error);
+      process.exit(1);
+    });
+}
 

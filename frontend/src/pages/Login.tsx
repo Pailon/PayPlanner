@@ -15,7 +15,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      await dispatch(loginWithTelegram()).unwrap();
+      await dispatch(loginWithTelegram());
       window.location.href = '/';
     } catch (error) {
       console.error('Login error:', error);

@@ -8,5 +8,11 @@ dist
 .DS_Store
 *.md
 .eslintrc.json
-tsconfig.json
+# tsconfig.json
+# Lockfiles
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# OS-specific files
 

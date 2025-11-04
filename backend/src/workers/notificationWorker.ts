@@ -105,9 +105,25 @@ export async function schedulePaymentNotifications(): Promise<void> {
   }
 }
 
-setInterval(() => {
-  schedulePaymentNotifications().catch(console.error);
-}, 60 * 60 * 1000);
+let notificationInterval: NodeJS.Timeout | null = null;
 
-schedulePaymentNotifications().catch(console.error);
+export function startNotificationWorker(): void {
+  // Запускаем первую проверку
+  schedulePaymentNotifications().catch(console.error);
+  
+  // Запускаем периодическую проверку каждый час
+  notificationInterval = setInterval(() => {
+    schedulePaymentNotifications().catch(console.error);
+  }, 60 * 60 * 1000);
+  
+  console.log('✅ Notification Worker запущен');
+}
+
+export function stopNotificationWorker(): void {
+  if (notificationInterval) {
+    clearInterval(notificationInterval);
+    notificationInterval = null;
+    console.log('Notification Worker остановлен');
+  }
+}
 

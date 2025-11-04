@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from 'antd';
-import { useAppDispatch, useAppSelector } from './store/hooks';
-import { authSlice } from './store/slices/authSlice';
+import { useAppDispatch } from './store/hooks';
 import { checkAuth, initTelegram } from './store/thunks/authThunks';
 import Dashboard from './pages/Dashboard';
 import Subscriptions from './pages/Subscriptions';
@@ -16,7 +15,6 @@ const { Content } = Layout;
 
 function App() {
   const dispatch = useAppDispatch();
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
   useEffect(() => {
     dispatch(initTelegram());

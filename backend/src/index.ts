@@ -10,7 +10,9 @@ import authRoutes from './routes/auth';
 import subscriptionRoutes from './routes/subscriptions';
 import statisticsRoutes from './routes/statistics';
 import catalogRoutes from './routes/catalog';
-import './workers/notificationWorker';
+import { waitForDatabase } from './config/database';
+import { runMigrations } from './db/migrate';
+import { startNotificationWorker } from './workers/notificationWorker';
 
 dotenv.config();
 
@@ -54,18 +56,34 @@ app.use('/api', subscriptionRoutes);
 app.use('/api', statisticsRoutes);
 app.use('/api', catalogRoutes);
 
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('Unhandled error:', err);
   res.status(500).json({ error: 'Internal server error' });
 });
 
 async function startServer() {
   try {
+    console.log('🔄 Инициализация PayPlanner Backend...\n');
+
+    // Ожидание подключения к PostgreSQL
+    await waitForDatabase();
+
+    // Запуск миграций
+    console.log('🔄 Выполнение миграций базы данных...');
+    await runMigrations();
+
+    // Запуск Telegram бота
+    console.log('🔄 Запуск Telegram бота...');
     await bot.launch();
+    console.log('✅ Telegram бот запущен');
+
+    // Запуск notification worker
+    console.log('🔄 Запуск Notification Worker...');
+    startNotificationWorker();
 
     app.listen(PORT, () => {
       console.log('\n' + '='.repeat(60));

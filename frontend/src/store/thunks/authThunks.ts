@@ -23,7 +23,7 @@ declare global {
   }
 }
 
-export const initTelegram = () => (dispatch: AppDispatch) => {
+export const initTelegram = () => () => {
   if (window.Telegram?.WebApp) {
     window.Telegram.WebApp.ready();
     window.Telegram.WebApp.expand();

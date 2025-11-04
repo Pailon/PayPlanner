@@ -1,12 +1,18 @@
-import { createHash, createHmac } from 'crypto';
+import { createHmac } from 'crypto';
 
+/*
 interface TelegramInitData {
-  query_id?: string;
-  user?: string;
+  query_id: string;
+  user: {
+    id: number;
+    first_name: string;
+    last_name?: string;
+    username?: string;
+  };
   auth_date: string;
   hash: string;
-  [key: string]: string | undefined;
 }
+*/
 
 export function validateTelegramInitData(initDataRaw: string): boolean {
   // Для валидации initData используется токен бота

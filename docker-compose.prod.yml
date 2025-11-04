@@ -4,11 +4,11 @@ services:
   # PostgreSQL база данных
   postgres:
     image: postgres:17-alpine
-    container_name: payplanner-postgres
+    container_name: payplaner_postgres
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB:-payplanner}
+      POSTGRES_USER: ${POSTGRES_USER:-payplaner}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-payplaner_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-payplaner}
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
     volumes:
       - postgres_data:/var/lib/postgresql/data

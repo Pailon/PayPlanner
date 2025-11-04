@@ -3,9 +3,11 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+# Установка зависимостей
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
+# Копирование исходного кода
 COPY . .
 RUN npm run build
 

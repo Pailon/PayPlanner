@@ -11,6 +11,18 @@ export const bot = new Telegraf(botToken);
 
 const WEB_APP_URL = process.env.WEB_APP_URL || 'https://your-domain.com';
 
+console.log('🔄 WebApp URL:', WEB_APP_URL);
+
+// Инициализация команд бота
+bot.telegram.setMyCommands([
+  { command: 'start', description: 'Открыть приложение' },
+  { command: 'help', description: 'Справка' },
+  { command: 'stats', description: 'Статистика' },
+  { command: 'settings', description: 'Настройки' },
+]).catch((error) => {
+  console.warn('⚠️ Не удалось установить команды:', error.message);
+});
+
 bot.start(async (ctx: Context) => {
   const user = ctx.from;
 
@@ -20,7 +32,7 @@ bot.start(async (ctx: Context) => {
     await ctx.reply(
       '👋 Добро пожаловать в PayPlaner!\n\n' +
         'Я помогу вам отслеживать ваши платные подписки.\n\n' +
-        'Используйте кнопку ниже, чтобы открыть приложение:',
+        'Нажмите кнопку ниже для открытия приложения:',
       {
         reply_markup: {
           inline_keyboard: [

@@ -15,42 +15,50 @@ interface TelegramInitData {
 */
 
 export function validateTelegramInitData(initDataRaw: string): boolean {
-  // Для валидации initData используется токен бота
+  console.log('🔐 Валидация initData, длина:', initDataRaw.length);
+  
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
-
   if (!botToken) {
     throw new Error('TELEGRAM_BOT_TOKEN not set');
   }
 
   const urlParams = new URLSearchParams(initDataRaw);
   const hash = urlParams.get('hash');
-
+  
   if (!hash) {
+    console.log('❌ Hash отсутствует');
     return false;
   }
 
+  // Удаляем hash и signature из параметров
   urlParams.delete('hash');
+  urlParams.delete('signature'); // Signature не участвует в валидации WebApp
 
-  const dataCheckString = Array.from(urlParams.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([key, value]) => `${key}=${value}`)
-    .join('\n');
+  // Сортируем параметры и создаем data_check_string
+  const params: string[] = [];
+  urlParams.forEach((value, key) => {
+    params.push(`${key}=${value}`);
+  });
+  params.sort();
+  const dataCheckString = params.join('\n');
 
-  // Согласно документации Telegram, секретный ключ создается из токена бота
-  const secretKey = createHmac('sha256', 'WebAppData')
-    .update(botToken)
-    .digest();
+  console.log('📝 Полная dataCheckString:\n', dataCheckString);
 
-  const calculatedHash = createHmac('sha256', secretKey)
-    .update(dataCheckString)
-    .digest('hex');
+  // Правильный алгоритм: HMAC-SHA256(botToken, 'WebAppData') как ключ, затем HMAC-SHA256(secretKey, data)
+  const secretKey = createHmac('sha256', 'WebAppData').update(botToken).digest();
+  const calculatedHash = createHmac('sha256', secretKey).update(dataCheckString).digest('hex');
+
+  console.log('🔐 Вычисленный hash:', calculatedHash);
+  console.log('🔐 Полученный hash:  ', hash);
 
   if (calculatedHash !== hash) {
+    console.log('❌ Хэши не совпадают!');
     return false;
   }
 
   const authDate = urlParams.get('auth_date');
   if (!authDate) {
+    console.log('❌ auth_date отсутствует');
     return false;
   }
 
@@ -58,10 +66,12 @@ export function validateTelegramInitData(initDataRaw: string): boolean {
   const currentTimestamp = Math.floor(Date.now() / 1000);
   const timeDiff = currentTimestamp - authTimestamp;
 
-  if (timeDiff > 86400) {
+  if (timeDiff > 86400) { // 24 часа
+    console.log('❌ initData устарел');
     return false;
   }
 
+  console.log('✅ Валидация успешна!');
   return true;
 }
 

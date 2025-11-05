@@ -18,6 +18,8 @@ declare global {
         ready: () => void;
         expand: () => void;
         close: () => void;
+        platform?: string;
+        version?: string;
       };
     };
   }
@@ -54,18 +56,34 @@ export const checkAuth = () => async (dispatch: AppDispatch) => {
 };
 
 export const loginWithTelegram = () => async (dispatch: AppDispatch) => {
-  if (!window.Telegram?.WebApp?.initData) {
-    throw new Error('Telegram WebApp not available');
-  }
-
   try {
+    console.log('🔍 Проверка Telegram WebApp...');
+    console.log('window.Telegram:', window.Telegram);
+    console.log('initData:', window.Telegram?.WebApp?.initData);
+    console.log('initDataUnsafe:', window.Telegram?.WebApp?.initDataUnsafe);
+
+    if (!window.Telegram?.WebApp?.initData) {
+      const error = new Error('Telegram WebApp not available or initData is empty');
+      console.error('❌', error.message);
+      throw error;
+    }
+
+    console.log('📤 Отправка запроса авторизации...');
     const response = await api.post('/auth/telegram', {
       initData: window.Telegram.WebApp.initData,
     });
 
+    console.log('✅ Ответ сервера:', response.data);
+    
+    // Сохраняем токен в localStorage
+    if (response.data.accessToken) {
+      localStorage.setItem('accessToken', response.data.accessToken);
+    }
+
     dispatch(setAuth(response.data));
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
+    console.error('❌ Ошибка авторизации:', error.response?.data || error.message);
     dispatch(clearAuth());
     throw error;
   }
